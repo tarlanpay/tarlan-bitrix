@@ -1,0 +1,26 @@
+version: '18.1.0'
+
+services:
+  bitrix: &default
+    build: &build
+      context: ./docker
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    depends_on:
+      - mysql
+    tty: true
+    volumes:
+      - ./docker/configs/.settings.php:/var/www/html/bitrix/.settings.php
+      - ./docker/configs/dbconn.php:/var/www/html/bitrix/php_interface/dbconn.php
+      - ./tarlan.payments:/var/www/html/bitrix/modules/tarlan.payments
+      - ./tarlan.payments/install/sale_payment/tarlanpayments:/var/www/html/bitrix/php_interface/include/sale_payment/tarlanpayments
+
+  mysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - /var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sitemanager
