@@ -17,12 +17,12 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/* && \
     /usr/sbin/a2enmod rewrite
 
-COPY business_encode.tar.gz /var/www/html/
+COPY configs/business_encode.tar.gz /var/www/html/
 
 RUN tar -xzf /var/www/html/business_encode.tar.gz -C /var/www/html && \
     rm /var/www/html/business_encode.tar.gz
 
-ADD ./configs/php_bitrix.ini /usr/local/etc/php/conf.d/
+ADD configs/php_bitrix.ini /usr/local/etc/php/conf.d/
 
 RUN mkdir -p /var/www/html/bitrix/php_interface/include/sale_payment/ && \
     chown -R www-data.www-data /var/www/html
@@ -31,4 +31,6 @@ VOLUME ["/var/www/html"]
 
 COPY docker-entrypoint.sh /usr/local/bin/
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+RUN ["chmod", "+x", "/usr/local/bin/docker-entrypoint.sh"]
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
